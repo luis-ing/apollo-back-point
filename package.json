@@ -1,0 +1,41 @@
+{
+  "name": "app-back-point",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "dev": "tsx watch server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.0.9",
+    "@vitest/coverage-v8": "^4.0.17",
+    "prisma": "^6.19.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "@apollo/server": "^5.2.0",
+    "@prisma/adapter-mariadb": "^7.2.0",
+    "@prisma/client": "^7.2.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "graphql": "^16.12.0",
+    "graphql-scalars": "^1.25.0",
+    "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.3"
+  }
+}

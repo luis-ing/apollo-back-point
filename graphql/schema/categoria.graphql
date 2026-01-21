@@ -1,0 +1,10 @@
+type Categoria {
+  idcategoria: Int!
+  nombre: String
+  activo: Boolean
+}
+
+type Query {
+  categorias: [Categoria!]!
+  categoria(id: Int!): Categoria
+}

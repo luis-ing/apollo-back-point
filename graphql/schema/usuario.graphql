@@ -1,0 +1,24 @@
+
+type Usuario {
+    id: Int!
+    nombreUsuario: String!
+    email: String!
+    contrasena: String!
+    fechaCreacion: String!
+    imgURL: String
+    activo: Boolean!
+    temaOscuro: Boolean!
+}
+
+type ResponseMsgLogin {
+    STATUS: Int
+    message: String
+    data: Usuario
+    token: String
+}
+
+extend type Query {
+    usuarios: [Usuario!]!
+    usuario(id: Int!): Usuario
+    LoginUsuario(email: String!, password: String!): ResponseMsgLogin
+}

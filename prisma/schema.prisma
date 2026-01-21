@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model categoria {
+  idcategoria              Int                        @id @default(autoincrement())
+  nombre                   String?                    @db.VarChar(70)
+  activo                   Boolean                    @default(true)
+  usuario_id               Int?
+  usuario                  usuario?                   @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria_usuario1")
+  conceptogastopresupuesto conceptogastopresupuesto[]
+
+  @@index([usuario_id], map: "fk_categoria_usuario1_idx")
+}
+
+model conceptogastopresupuesto {
+  id                                                                Int                     @id @default(autoincrement())
+  nombre                                                            String                  @db.VarChar(45)
+  activo                                                            Boolean                 @default(true)
+  fechaCreacion                                                     DateTime                @default(now()) @db.DateTime(0)
+  fechaActualizacion                                                DateTime?               @default(now()) @db.DateTime(0)
+  UsuarioCreador_id                                                 Int
+  UsuarioActualizacion_id                                           Int?
+  GastoPresupuesto_id                                               Int
+  IntervaloFijosAplicado_id                                         Int?
+  cuentas_id                                                        Int
+  fechaInicio                                                       DateTime?               @db.DateTime(0)
+  fijovariable_id                                                   Int
+  idcategoria                                                       Int?
+  monto                                                             Decimal?                @db.Decimal(10, 2)
+  fechaFinal                                                        DateTime?               @db.DateTime(0)
+  gastopresupuesto                                                  gastopresupuesto        @relation(fields: [GastoPresupuesto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ConceptoGastoPresupuesto_GastoPresupuesto1")
+  intervalofijosaplicado                                            intervalofijosaplicado? @relation(fields: [IntervaloFijosAplicado_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ConceptoGastoPresupuesto_IntervaloFijosAplicado1")
+  usuario_conceptogastopresupuesto_UsuarioCreador_idTousuario       usuario                 @relation("conceptogastopresupuesto_UsuarioCreador_idTousuario", fields: [UsuarioCreador_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ConceptoGastoPresupuesto_Usuario1")
+  usuario_conceptogastopresupuesto_UsuarioActualizacion_idTousuario usuario?                @relation("conceptogastopresupuesto_UsuarioActualizacion_idTousuario", fields: [UsuarioActualizacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ConceptoGastoPresupuesto_Usuario2")
+  categoria                                                         categoria?              @relation(fields: [idcategoria], references: [idcategoria], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptogastopresupuesto_categoria1")
+  cuentas                                                           cuentas                 @relation(fields: [cuentas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptogastopresupuesto_cuentas1")
+  fijovariable                                                      fijovariable            @relation(fields: [fijovariable_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptogastopresupuesto_fijovariable1")
+  hitorialpresupuesto                                               hitorialpresupuesto[]
+
+  @@index([GastoPresupuesto_id], map: "fk_ConceptoGastoPresupuesto_GastoPresupuesto1_idx")
+  @@index([IntervaloFijosAplicado_id], map: "fk_ConceptoGastoPresupuesto_IntervaloFijosAplicado1_idx")
+  @@index([UsuarioCreador_id], map: "fk_ConceptoGastoPresupuesto_Usuario1_idx")
+  @@index([UsuarioActualizacion_id], map: "fk_ConceptoGastoPresupuesto_Usuario2_idx")
+  @@index([idcategoria], map: "fk_conceptogastopresupuesto_categoria1_idx")
+  @@index([cuentas_id], map: "fk_conceptogastopresupuesto_cuentas1_idx")
+  @@index([fijovariable_id], map: "fk_conceptogastopresupuesto_fijovariable1_idx")
+}
+
+model cuentas {
+  id                       Int                        @id @default(autoincrement())
+  nombre                   String                     @db.VarChar(50)
+  presupuestoDisponible    Decimal                    @default(0.00) @db.Decimal(10, 2)
+  activo                   Boolean                    @default(true)
+  usuarioCreador_id        Int
+  conceptogastopresupuesto conceptogastopresupuesto[]
+  usuario                  usuario                    @relation(fields: [usuarioCreador_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cuentas_usuario1")
+  cuentasusuario           cuentasusuario[]
+  hitorialpresupuesto      hitorialpresupuesto[]
+
+  @@index([usuarioCreador_id], map: "fk_cuentas_usuario1_idx")
+}
+
+model cuentasusuario {
+  cuentas_id         Int
+  usuario_id         Int
+  activo             Boolean @default(true)
+  invitacionAceptada Boolean @default(false)
+  cuentas            cuentas @relation(fields: [cuentas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cuentas_has_usuario_cuentas1")
+  usuario            usuario @relation(fields: [usuario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cuentas_has_usuario_usuario1")
+
+  @@id([cuentas_id, usuario_id])
+  @@index([cuentas_id], map: "fk_cuentas_has_usuario_cuentas1_idx")
+  @@index([usuario_id], map: "fk_cuentas_has_usuario_usuario1_idx")
+}
+
+model fijovariable {
+  id                       Int                        @id @default(autoincrement())
+  nombre                   String?                    @db.VarChar(45)
+  conceptogastopresupuesto conceptogastopresupuesto[]
+}
+
+model gastopresupuesto {
+  id                       Int                        @id @default(autoincrement())
+  nombre                   String?                    @db.VarChar(45)
+  conceptogastopresupuesto conceptogastopresupuesto[]
+}
+
+model hitorialpresupuesto {
+  id                                                           Int                      @id @default(autoincrement())
+  monto                                                        Decimal?                 @db.Decimal(10, 2)
+  fechaCreacion                                                DateTime                 @default(now()) @db.DateTime(0)
+  fechaActualizacion                                           DateTime?                @default(now()) @db.DateTime(0)
+  ConceptoGastoPresupuesto_id                                  Int
+  UsuarioCreador_id                                            Int
+  UsuarioActualizacion_id                                      Int?
+  activo                                                       Boolean                  @default(true)
+  cuentas_id                                                   Int
+  fechaMontoAplicado                                           DateTime?                @db.DateTime(0)
+  conceptogastopresupuesto                                     conceptogastopresupuesto @relation(fields: [ConceptoGastoPresupuesto_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_HitorialPresupuesto_ConceptoGastoPresupuesto")
+  usuario_hitorialpresupuesto_UsuarioCreador_idTousuario       usuario                  @relation("hitorialpresupuesto_UsuarioCreador_idTousuario", fields: [UsuarioCreador_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_HitorialPresupuesto_Usuario1")
+  usuario_hitorialpresupuesto_UsuarioActualizacion_idTousuario usuario?                 @relation("hitorialpresupuesto_UsuarioActualizacion_idTousuario", fields: [UsuarioActualizacion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_HitorialPresupuesto_Usuario2")
+  cuentas                                                      cuentas                  @relation(fields: [cuentas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_hitorialpresupuesto_cuentas1")
+
+  @@index([ConceptoGastoPresupuesto_id], map: "fk_HitorialPresupuesto_ConceptoGastoPresupuesto")
+  @@index([UsuarioCreador_id], map: "fk_HitorialPresupuesto_Usuario1_idx")
+  @@index([UsuarioActualizacion_id], map: "fk_HitorialPresupuesto_Usuario2_idx")
+  @@index([cuentas_id], map: "fk_hitorialpresupuesto_cuentas1_idx")
+}
+
+model intervalofijosaplicado {
+  id                       Int                        @id @default(autoincrement())
+  nombre                   String?                    @db.VarChar(55)
+  activo                   Boolean                    @default(true)
+  conceptogastopresupuesto conceptogastopresupuesto[]
+}
+
+model usuario {
+  id                                                                                 Int                        @id @default(autoincrement())
+  nombreUsuario                                                                      String                     @db.VarChar(60)
+  email                                                                              String?                    @db.VarChar(255)
+  contrasena                                                                         String                     @db.VarChar(80)
+  fechaCreacion                                                                      DateTime?                  @default(now()) @db.Timestamp(0)
+  imgURL                                                                             String?                    @db.VarChar(300)
+  activo                                                                             Boolean                    @default(true)
+  temaOscuro                                                                         Boolean                    @default(false)
+  categoria                                                                          categoria[]
+  conceptogastopresupuesto_conceptogastopresupuesto_UsuarioCreador_idTousuario       conceptogastopresupuesto[] @relation("conceptogastopresupuesto_UsuarioCreador_idTousuario")
+  conceptogastopresupuesto_conceptogastopresupuesto_UsuarioActualizacion_idTousuario conceptogastopresupuesto[] @relation("conceptogastopresupuesto_UsuarioActualizacion_idTousuario")
+  cuentas                                                                            cuentas[]
+  cuentasusuario                                                                     cuentasusuario[]
+  hitorialpresupuesto_hitorialpresupuesto_UsuarioCreador_idTousuario                 hitorialpresupuesto[]      @relation("hitorialpresupuesto_UsuarioCreador_idTousuario")
+  hitorialpresupuesto_hitorialpresupuesto_UsuarioActualizacion_idTousuario           hitorialpresupuesto[]      @relation("hitorialpresupuesto_UsuarioActualizacion_idTousuario")
+}

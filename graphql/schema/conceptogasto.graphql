@@ -1,0 +1,10 @@
+type ConceptoGastoPresupuesto {
+  id: Int!
+  nombre: String!
+  monto: Float
+  activo: Boolean
+}
+
+extend type Query {
+  conceptosGasto: [ConceptoGastoPresupuesto!]!
+}

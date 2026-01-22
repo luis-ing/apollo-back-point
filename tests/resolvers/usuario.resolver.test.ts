@@ -12,17 +12,17 @@ const context = {
   prisma: prismaMock,
 }
 
-describe('usuarioResolvers - LoginUsuario', () => {
+describe('usuarioResolvers - Login', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  describe('Query.LoginUsuario', () => {
+  describe('Query.Login', () => {
     it('retorna 401 si el usuario no existe', async () => {
       prismaMock.usuario.findFirst.mockResolvedValue(null)
   
-      const result = await usuarioResolvers.Query.LoginUsuario(
+      const result = await usuarioResolvers.Query.Login(
         {},
         { email: 'test@mail.com', password: '123456' },
         context as any
@@ -42,7 +42,7 @@ describe('usuarioResolvers - LoginUsuario', () => {
   
       ;(bcrypt.compare as any).mockResolvedValue(false)
   
-      const result = await usuarioResolvers.Query.LoginUsuario(
+      const result = await usuarioResolvers.Query.Login(
         {},
         { email: 'test@mail.com', password: 'wrong' },
         context as any
@@ -65,7 +65,7 @@ describe('usuarioResolvers - LoginUsuario', () => {
       ;(bcrypt.compare as any).mockResolvedValue(true)
       ;(jwt.sign as any).mockReturnValue('FAKE_TOKEN')
   
-      const result = await usuarioResolvers.Query.LoginUsuario(
+      const result = await usuarioResolvers.Query.Login(
         {},
         { email: 'test@mail.com', password: '123456' },
         context as any
@@ -79,7 +79,7 @@ describe('usuarioResolvers - LoginUsuario', () => {
     it('retorna 500 si hay un error inesperado', async () => {
       prismaMock.usuario.findFirst.mockRejectedValue(new Error('DB error'))
 
-      const result = await usuarioResolvers.Query.LoginUsuario(
+      const result = await usuarioResolvers.Query.Login(
         {},
         { email: 'test@mail.com', password: '123456' },
         context as any

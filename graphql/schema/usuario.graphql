@@ -10,7 +10,7 @@ type Usuario {
     temaOscuro: Boolean!
 }
 
-type ResponseMsgLogin {
+type ResponseMsg {
     STATUS: Int
     message: String
     data: Usuario
@@ -20,5 +20,7 @@ type ResponseMsgLogin {
 extend type Query {
     usuarios: [Usuario!]!
     usuario(id: Int!): Usuario
-    LoginUsuario(email: String!, password: String!): ResponseMsgLogin
+    Login(email: String!, password: String!): ResponseMsg
+    RegisterUser(nombreUsuario: String!, email: String!, password: String!): ResponseMsg
+
 }
